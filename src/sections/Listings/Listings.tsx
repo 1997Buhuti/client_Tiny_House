@@ -4,12 +4,13 @@ import {useQuery, useMutation} from "@apollo/react-hooks";
 import {Alert, Avatar, Button, List, Spin} from "antd";
 import {Listings as ListingsData} from "./__generated__/Listings";
 import {ListingsSkeleton} from "./components";
+//import 'styles/CollectionCreateForm';
 import {
     DeleteListing as DeleteListingData,
     DeleteListingVariables
 } from "./__generated__/DeleteListing";
 import "./styles/Listings.css";
-import ModalForm from "./ModalForm";
+import CollectionCreateForm from "./CollectionCreateForm";
 
 const LISTINGS = gql`
   query Listings {
@@ -39,6 +40,7 @@ interface Props {
     title: string;
 }
 
+
 export const Listings = ({title}: Props) => {
     const [visible, setVisible] = useState(false);
     const refContainer = useRef(null);
@@ -56,26 +58,11 @@ export const Listings = ({title}: Props) => {
     };
 
     const listings = data ? data.listings : null;
-    const handleCreate = () => {
-        console.log("It won't work");
-        // @ts-ignore
-        const { form } = refContainer.current;
-        form.validateFields((err: any, values: any) => {
-            if (err) {
-                return;
-            }
-
-            console.log("Received values of form: ", values);
-            form.resetFields();
-            setVisible(false);
-        });
+    const onCreate = (values: any) => {
+        console.log('Received values of form: ', values);
+        setVisible(false);
     };
 
-    const saveFormRef = (formRef: any) => {
-        refContainer.current = formRef;
-    };
-
-    // @ts-ignore
     const listingsList = listings ? (
         <List
             itemLayout="horizontal"
@@ -87,22 +74,24 @@ export const Listings = ({title}: Props) => {
                             type="primary"
                             onClick={() => handleDeleteListing(listing.id)}
                         >
-                            Delete
+                            Update
                         </Button>,
                         <Button
                             type="primary"
-                            //onClick={}
+                            style={{ background: "green", borderColor: "green" }}
+                            onClick={()=>setVisible(true)}
                         >
                             Add
                         </Button>,
-                        <ModalForm
-                            wrappedComponentRef={saveFormRef}
+                        <CollectionCreateForm
                             visible={visible}
-                            onCancel={() => setVisible(false)}
-                            onCreate={() => handleCreate()}
+                            onCreate={onCreate}
+                            onCancel={() => {
+                                setVisible(false);
+                            }}
                         />,
                         <Button
-                            type="danger"
+                            type="primary" danger
                             onClick={() => setVisible(true)}
                         >
                             Delete
@@ -150,6 +139,7 @@ export const Listings = ({title}: Props) => {
                 <h2>{title}</h2>
                 {listingsList}
             </Spin>
+
         </div>
     );
 };
