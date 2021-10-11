@@ -5,7 +5,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
     return (
         <Modal
             visible={visible}
-            title="Create a new collection"
+            title="Create a new Listing"
             okText="Create"
             cancelText="Cancel"
             onCancel={onCancel}
